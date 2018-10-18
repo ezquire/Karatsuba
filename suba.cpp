@@ -7,6 +7,7 @@ using namespace std;
 
 // Function Prototypes
 void split(int, vector<int>&);
+int mult(vector<int>, vector<int>);
 
 int main () {
 
@@ -75,3 +76,8 @@ void split(int in, vector<int>& parse) {
 		break;
 	}
 }
+
+int mult(vector<int> a, vector<int> b) {
+	return 1;
+}
+
