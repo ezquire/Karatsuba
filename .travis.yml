@@ -1,6 +1,7 @@
-language: c++
+language: cpp
 compiler:
-  - g++
+  - gcc
+  - clang
 
 sudo: false
 dist: trusty
