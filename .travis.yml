@@ -1,0 +1,8 @@
+language: c++
+compiler:
+  - g++
+
+sudo: false
+dist: trusty
+
+script: make
