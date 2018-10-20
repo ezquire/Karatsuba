@@ -15,8 +15,8 @@ string string_cat(string, string, string);
 
 int main () {
 
-	string a = "1000";
-	string b = "1000";	
+	string a = "999";
+	string b = "999";
 	//int choice = 0;
 
 	cout << product(a, b) << endl;
@@ -95,6 +95,8 @@ string product(string x, string y) {
 		pad2 = pad2.substr(1);
 		pad1 = pad1.substr(1);
 
+		// W
+
 		// Splits the padded strings x and y into to halves
 		int half = x.length()/2;
 		string x1 = x.substr(0, half);
@@ -119,18 +121,28 @@ string product(string x, string y) {
 }
 
 string string_cat(string c0, string c1, string c2) {
+ 	//if(c1 == "")
+	//	c1 = "0";
 
 	string result;
 	string right;
 	string middle;
 	int addition = 0;
 
-	string z1 = c0;
-	string z2 = c1.substr(c1.length() - c0.length());
-	string z3 = c2.substr(c2.length() - c0.length());
+	int c0size = c0.length();
+	int c1size = c1.length();
+	int c2size = c2.length();
 
-	if(c2 == "1000000")
-		return c2;
+	int minSize = min({c0size, c1size, c2size});
+
+	cout << "smallest string: " << minSize << endl;
+
+	string z1 = c0;
+	string z2 = c1.substr(c1.length() - minSize);
+	string z3 = c2.substr(c2.length() - minSize);
+
+	//if(c2 == "1000000")
+	//	return c2;
 
 	addition = stoi(z1, NULL) + stoi(z2, NULL) + stoi(z3, NULL);
 	right = to_string(addition);
