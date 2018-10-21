@@ -214,7 +214,20 @@ string string_add_large(string x, string y) {
 	return result;
 }
 
-string expo(string a, string b) {
-	string v;
-	return v;
+string expo(string a, int n) {
+	if(n < 0) {
+		cout << "Error: n must be positive";
+		exit(1);
+	}
+	else {
+		// Base case
+		if(n == 0)
+			return "1";
+		// n is odd
+		if(n%2 != 0)
+			return product(a, product(expo(a, (n-1)/2), expo(a, (n-1)/2))); 
+		// n is even
+		else
+			return product(expo(a, n/2), expo(a, n/2)); 
+	}
 }
