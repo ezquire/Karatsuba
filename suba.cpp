@@ -11,6 +11,7 @@ string product(string, string);
 string expo(string, string);
 string multiply_str(string, string);
 string add_str(string, string);
+// Need to figure this out
 //string string_cat(string, string, string);
 string string_add_large(string, string);
 
