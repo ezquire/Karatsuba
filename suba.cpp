@@ -8,7 +8,7 @@ using namespace std;
 
 // Function Prototypes
 string product(string, string);
-string expo(string, string);
+string expo(string, int);
 string multiply_str(string, string);
 string add_str(string, string);
 // Need to figure this out
@@ -214,7 +214,7 @@ string string_add_large(string x, string y) {
 	return result;
 }
 
-string expo(string a, int n) {
+string expo(string a, int n) { 
 	if(n < 0) {
 		cout << "Error: n must be positive";
 		exit(1);
