@@ -11,7 +11,7 @@ string product(string, string);
 string expo(string, int);
 string multiply_str(string, string);
 string add_str(string, string);
-// Need to figure this out
+
 //string string_cat(string, string, string);
 string string_add_large(string, string);
 
@@ -220,9 +220,12 @@ string expo(string a, int n) {
 		exit(1);
 	}
 	else {
-		// Base case
+		// Base cases
 		if(n == 0)
 			return "1";
+		if(n == 1)
+			return a;
+		
 		// n is odd
 		if(n%2 != 0)
 			return product(a, product(expo(a, (n-1)/2), expo(a, (n-1)/2))); 
