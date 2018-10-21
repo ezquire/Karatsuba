@@ -119,7 +119,7 @@ string product(string x, string y) {
 		
 		cout << "c0: " << c0 << " | c1: " << c1 << " | c2: " << c2 << endl;
 	}
-	result += string_add_large(c0, c1);
+	result = string_add_large(c0, c1);
 	//result += add_str(c0, c1);
 	result = string_add_large(result, c2);
 	//string result2 = add_str(result, c2);
@@ -201,15 +201,17 @@ string string_add_large(string x, string y) {
 	if(carry)
 		result.push_back(carry + '0');
 
-	// Remove leading 0s
-	//int i = 0;
-	//while(result[i] == '0')
-	//	++i;
-
 	//string ret = result.substr(i);
 
 	// Reverse result
 	reverse(result.begin(), result.end());
+
+	cout << "result: " << result << endl;
+
+	// Remove leading 0s
+	// int i = 0;
+	// while(result[i] == '0')
+	//	   ++i;
 
 	return result;
 }
