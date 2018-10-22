@@ -21,7 +21,6 @@ int main () {
 	string a = "100000000";
 	string b = "100000000";
 
-	//int choice = 0;
 	//cout << expo(a, 2) << endl;
 
 	cout << "a1: " << a << " b1: " << b << endl;
@@ -36,6 +35,7 @@ int main () {
 
 	/*
 	  User interface removed for testing purposes
+	  int choice = 0;
 	  
 	  cout << "Input an integer less than or equal to 1000 for A: ";
 	cin >> a;
