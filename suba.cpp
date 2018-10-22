@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
+#include <ctype.h>
 #include <algorithm>
 #include <string>
 #include <bits/stdc++.h>
@@ -28,17 +29,21 @@ void run_karatsuba(int& choice) {
 		cout << "\nEnter 1, 2, or 3\n1) Multiplication\n2) Exponentiation\n3)";
 		cout << " Quit\n";
 		cin >> choice;
-		if(choice == 1) {
+		switch(choice) {
+		case 1:
 			get_input(a, b);
 			cout << "\nPerforming multiplication with input: " << a << ", ";
 			cout << b << endl;
 			cout << a << "x" << b << " = " << product(a, b) << endl;
-		}
-		else if(choice == 2) {
+			break;
+		case 2:
 			get_input(a, b);
 			cout << "\nPerforming exponentiation with input: " << a << ", ";
 			cout << b << endl;;
 			cout << a << "^" << b << " = " << expo(a, b) << endl;
+			break;
+		default :
+			break;
 		}
 	}
 }
