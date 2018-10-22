@@ -9,9 +9,9 @@ using namespace std;
 
 // Function Prototypes
 string product(string, string);
-string expo(string, string);
-string multiply_str(string, string);
-string string_add_large(string, string);
+string expo(const string&, const string&);
+const string multiply_str(const string&, const string&);
+const string string_add_large(string, string);
 void get_input(string&, string&);
 void run_karatsuba(int&);
 
@@ -60,7 +60,7 @@ void get_input(string& a, string& b) {
 	}
 }
 
-string multiply_str(string x, string y) {
+const string multiply_str(const string& x, const string& y) {
 	int product = ((x[0] - '0') * (y[0] - '0'));
 	return to_string(product);
 }
@@ -79,9 +79,9 @@ string product(string x, string y) {
  	else {
 		// Pad x and y with leading 0s to make them an even number of digits
 		if(x.length()%2 != 0)
-			x = "0" + x;
+			x = '0' + x;
 		if(y.length()%2 != 0)
-			y = "0" + y;
+			y = '0' + y;
 		// Pad the smaller value with leading 0s to make it the same length
 		if(x.length() < y.length()) {
 			string a ((y.length() - x.length()), '0');
@@ -121,7 +121,7 @@ string product(string x, string y) {
 	return result;
 }
 
-string string_add_large(string x, string y) {
+const string string_add_large(string x, string y) {
 	string result = "";
 	
 	// Swap strings in memory so the larger is second
@@ -164,7 +164,7 @@ string string_add_large(string x, string y) {
 	return result;
 }
 
-string expo(string a, string n) {
+string expo(const string& a, const string& n) {
 	long nInt = stol(n, NULL);
 	string nOdd = to_string((nInt - 1)/2);
 	string nEven = to_string(nInt/2);
