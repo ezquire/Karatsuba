@@ -9,35 +9,17 @@ using namespace std;
 
 // Function Prototypes
 string product(string, string);
-string expo(string, int);
+string expo(string, string);
 string multiply_str(string, string);
-string add_str(string, string);
 string string_add_large(string, string);
 
 int main () {
 
-	string a1 = "10000000";
-	string b1 = "10000000";
-	string a = "100000000";
-	string b = "100000000";
+	string a = "";
+	string b = "";	
+	int choice = 0;
 
-	//cout << expo(a, 2) << endl;
-
-	cout << "a1: " << a << " b1: " << b << endl;
-	cout << "expected output: 100000000000000" << endl;
-	cout << "  actual output: " << product(a1, b1) << endl;
-	//int choice = 0;
-	//cout << expo(a, 2) << endl;
-
-	cout << "a: " << a << " b: " << b << endl;
-	cout << "expected output: 10000000000000000" << endl;
-	cout << "  actual output: " << product(a, b) << endl;
-
-	/*
-	  User interface removed for testing purposes
-	  int choice = 0;
-	  
-	  cout << "Input an integer less than or equal to 1000 for A: ";
+	cout << "Input an integer less than or equal to 1000 for A: ";
 	cin >> a;
 	while(stoi(a, NULL) > 1000) {
 		cout << "Error: input should be less than or equal to 1000\n";
@@ -58,26 +40,19 @@ int main () {
 		cin >> choice;
 		if(choice == 1) {
 			cout << "Running Task 1 with input: " << a << ", " << b << endl;;
-			cout << "product: " << product(a, b) << endl;
-			cout << endl;
+			cout << a << "x" << b << " = " << product(a, b) << endl;
 		}
 		else if(choice == 2) {
 			cout << "Running Task 2 with input: " << a << ", " << b << endl;;
-			cout << endl;
+			cout << a << "^" << b << " = " << expo(a, b) << endl;
 		}
-		}*/
+	}
 	return 0;
 }
 
 string multiply_str(string x, string y) {
-	int product = (stoi(x, NULL) * stoi(y, NULL));
+	int product = ((x[0] - '0') * (y[0] - '0'));
 	return to_string(product);
-}
-
-string add_str(string x, string y) {
-	int sum = (stoi(x, NULL) + stoi(y, NULL));
-	return to_string(sum);
-	
 }
 
 string product(string x, string y) {
@@ -86,24 +61,18 @@ string product(string x, string y) {
 	string c2;
 	string c0;
 	string c1;
-	long n = 0;
 	
 	if(x.length() < 2 && y.length() < 2) {
 		result = multiply_str(x, y);
 		return result;
 	}
  	else {
-
-		// Pads x and y with leading 0s to make them an even number of digits
-		// (We need to think about this more, in the case: 4 digits X 2 digits)
-			
-		if(x.length()%2 != 0) {
+		// Pad x and y with leading 0s to make them an even number of digits
+		if(x.length()%2 != 0)
 			x = "0" + x;
-		}
-		if(y.length()%2 != 0) {
+		if(y.length()%2 != 0)
 			y = "0" + y;
-		}
-
+		// Pad the smaller value with leading 0s to make it the same length
 		if(x.length() < y.length()) {
 			string a ((y.length() - x.length()), '0');
 			x = a + x;
@@ -112,14 +81,13 @@ string product(string x, string y) {
 			string b ((x.length() - y.length()), '0');
 			y = b + y;
 		}
-		// Multiplier
-		n = x.length();
 		
-		// Creates strings of trailing 0s that will pad c2 and c1 
-		string pad2 = to_string((int)pow(10, n));
-		string pad1 = to_string((int)pow(10, n/2));
-		pad2 = pad2.substr(1);
-		pad1 = pad1.substr(1);
+		// Multiplier
+		int n = x.length();
+		
+		// Creates strings of trailing 0s that will pad c2 and c1
+		string pad2 (n, '0');
+		string pad1 (n/2, '0');		
 
 		// Splits the padded strings x and y into to halves
 		int half = x.length()/2;
@@ -146,18 +114,18 @@ string product(string x, string y) {
 }
 
 string string_add_large(string x, string y) {
-	
 	string result = "";
 	
 	// Swap strings in memory so the larger is second
 	if(x.length() > y.length())
 	  x.swap(y);
 
+	// Find the lengths of both strings
 	int xLength = x.length();
 	int yLength = y.length();
 
 	// Need to reverse them so the rightmost digits are in the leftmost indices
-	// This can probably be done better
+	// This can probably be optimized
 	reverse(x.begin(), x.end());
 	reverse(y.begin(), y.end());
 
@@ -189,22 +157,25 @@ string string_add_large(string x, string y) {
 	return result;
 }
 
-string expo(string a, int n) { 
-	if(n < 0) {
+string expo(string a, string n) {
+	long nInt = stol(n, NULL);
+	string nOdd = to_string((nInt - 1)/2);
+	string nEven = to_string(nInt/2);
+	if(nInt< 0) {
 		cout << "Error: n must be positive";
 		exit(1);
 	}
 	else {
 		// Base cases
-		if(n == 0)
+		if(nInt == 0)
 			return "1";
-		if(n == 1)
+		if(nInt == 1)
 			return a;		
 		// n is odd
-		if(n%2 != 0)
-			return product(a, product(expo(a, (n-1)/2), expo(a, (n-1)/2))); 
+		if(nInt%2 != 0)
+			return product(a, product(expo(a, nOdd), expo(a, nOdd))); 
 		// n is even
 		else
-			return product(expo(a, n/2), expo(a, n/2)); 
+			return product(expo(a, nEven), expo(a, nEven)); 
 	}
 }
