@@ -3,6 +3,7 @@
 #include <math.h>
 #include <algorithm>
 #include <string>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -11,19 +12,32 @@ string product(string, string);
 string expo(string, int);
 string multiply_str(string, string);
 string add_str(string, string);
-
-//string string_cat(string, string, string);
 string string_add_large(string, string);
 
 int main () {
 
-	string a = "10000";
-	string b = "10000";
+	string a1 = "10000000";
+	string b1 = "10000000";
+	string a = "100000000";
+	string b = "100000000";
+
 	//int choice = 0;
+	//cout << expo(a, 2) << endl;
 
-	cout << product(a, b) << endl;
+	cout << "a1: " << a << " b1: " << b << endl;
+	cout << "expected output: 100000000000000" << endl;
+	cout << "  actual output: " << product(a1, b1) << endl;
+	//int choice = 0;
+	//cout << expo(a, 2) << endl;
 
-	/*cout << "Input an integer less than or equal to 1000 for A: ";
+	cout << "a: " << a << " b: " << b << endl;
+	cout << "expected output: 10000000000000000" << endl;
+	cout << "  actual output: " << product(a, b) << endl;
+
+	/*
+	  User interface removed for testing purposes
+	  
+	  cout << "Input an integer less than or equal to 1000 for A: ";
 	cin >> a;
 	while(stoi(a, NULL) > 1000) {
 		cout << "Error: input should be less than or equal to 1000\n";
@@ -82,6 +96,7 @@ string product(string x, string y) {
 
 		// Pads x and y with leading 0s to make them an even number of digits
 		// (We need to think about this more, in the case: 4 digits X 2 digits)
+			
 		if(x.length()%2 != 0) {
 			x = "0" + x;
 		}
@@ -89,6 +104,14 @@ string product(string x, string y) {
 			y = "0" + y;
 		}
 
+		if(x.length() < y.length()) {
+			string a ((y.length() - x.length()), '0');
+			x = a + x;
+		}
+		else if(y.length() < x.length()) {
+			string b ((x.length() - y.length()), '0');
+			y = b + y;
+		}
 		// Multiplier
 		n = x.length();
 		
@@ -116,70 +139,25 @@ string product(string x, string y) {
 		// Pad c2 and c1 with 0s
 		c2 += pad2;
 		c1 += pad1;
-		
-		cout << "c0: " << c0 << " | c1: " << c1 << " | c2: " << c2 << endl;
 	}
 	result = string_add_large(c0, c1);
-	//result += add_str(c0, c1);
 	result = string_add_large(result, c2);
-	//string result2 = add_str(result, c2);
 	return result;
 }
 
-/*string string_cat(string c0, string c1, string c2) {
- 	//if(c1 == "")
-	//	c1 = "0";
-
-	string result;
-	string right;
-	string middle;
-	int addition = 0;
-
-	int c0size = c0.length();
-	int c1size = c1.length();
-	int c2size = c2.length();
-
-	int minSize = min({c0size, c1size, c2size});
-
-	cout << "smallest string: " << minSize << endl;
-
-	string z1 = c0;
-	string z2 = c1.substr(c1.length() - minSize);
-	string z3 = c2.substr(c2.length() - minSize);
-
-	//if(c2 == "1000000")
-	//	return c2;
-
-	addition = stoi(z1, NULL) + stoi(z2, NULL) + stoi(z3, NULL);
-	right = to_string(addition);
-
-	c1.resize(c1.length() - c0.length());
-	c2.resize(c2.length() - c0.length());
-
-	z1 = c1;
-	z2 = c2.substr(c2.length() - c1.length());
-
-	addition = stoi(z1, NULL) + stoi(z2, NULL);
-	middle = to_string(addition);
-
-	c2.resize(c2.length() - c1.length());
-			  
-	result = c2 + middle + right;
-	
-	return result;
-	}*/
-
 string string_add_large(string x, string y) {
-
+	
+	string result = "";
+	
 	// Swap strings in memory so the larger is second
 	if(x.length() > y.length())
-		swap(x, y);
+	  x.swap(y);
 
-	string result = "";
 	int xLength = x.length();
 	int yLength = y.length();
 
 	// Need to reverse them so the rightmost digits are in the leftmost indices
+	// This can probably be done better
 	reverse(x.begin(), x.end());
 	reverse(y.begin(), y.end());
 
@@ -192,26 +170,21 @@ string string_add_large(string x, string y) {
 	}
 
 	// Add carries to the remaining digits of the larger number
-	for(int i = 0; i < yLength; ++i) {
+	for(int i = xLength; i < yLength; ++i) {
 		int sum = ((y[i] - '0') + carry); // Convert and add
 		result.push_back(sum%10 + '0'); // Covert back to string and push
+		carry = sum/10;
 	}
 
 	// If there is a remaining carry, convert to string and push
 	if(carry)
 		result.push_back(carry + '0');
 
-	//string ret = result.substr(i);
-
 	// Reverse result
 	reverse(result.begin(), result.end());
 
-	cout << "result: " << result << endl;
-
 	// Remove leading 0s
-	// int i = 0;
-	// while(result[i] == '0')
-	//	   ++i;
+	result.erase(0, min(result.find_first_not_of('0'), result.size()-1));
 
 	return result;
 }
@@ -226,8 +199,7 @@ string expo(string a, int n) {
 		if(n == 0)
 			return "1";
 		if(n == 1)
-			return a;
-		
+			return a;		
 		// n is odd
 		if(n%2 != 0)
 			return product(a, product(expo(a, (n-1)/2), expo(a, (n-1)/2))); 
