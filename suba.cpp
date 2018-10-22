@@ -13,28 +13,34 @@ string expo(string, string);
 string multiply_str(string, string);
 string string_add_large(string, string);
 void get_input(string&, string&);
+void run_karatsuba(int&);
 
 int main () {
-
-	string a = "";
-	string b = "";	
 	int choice = 0;
+	run_karatsuba(choice);
+	return 0;
+}
 
-	while(choice < 3) {
-		cout << "\nEnter 1, 2, or 3\n1) Multiplication\n2) Exponentiation\n3) Quit\n";
+void run_karatsuba(int& choice) {
+		string a = "";
+		string b = "";
+		while(choice < 3) {
+		cout << "\nEnter 1, 2, or 3\n1) Multiplication\n2) Exponentiation\n3)";
+		cout << " Quit\n";
 		cin >> choice;
 		if(choice == 1) {
 			get_input(a, b);
-			cout << "\nPerforming multiplication with input: " << a << ", " << b << endl;;
+			cout << "\nPerforming multiplication with input: " << a << ", ";
+			cout << b << endl;
 			cout << a << "x" << b << " = " << product(a, b) << endl;
 		}
 		else if(choice == 2) {
 			get_input(a, b);
-			cout << "\nPerforming exponentiation with input: " << a << ", " << b << endl;;
+			cout << "\nPerforming exponentiation with input: " << a << ", ";
+			cout << b << endl;;
 			cout << a << "^" << b << " = " << expo(a, b) << endl;
 		}
 	}
-	return 0;
 }
 
 void get_input(string& a, string& b) {
@@ -88,11 +94,11 @@ string product(string x, string y) {
 		// Multiplier
 		int n = x.length();
 
-		// Creates strings of trailing 0s that will pad c2 and c1
+		// Create strings of 0s that will be appended to c2 and c1
 		string pad2 (n, '0');
 		string pad1 (n/2, '0');		
 
-		// Splits the padded strings x and y into to halves
+		// Split the padded strings x and y into to halves
 		int half = x.length()/2;
 		string x1 = x.substr(0, half);
 		string x0 = x.substr(half);
@@ -105,10 +111,11 @@ string product(string x, string y) {
 		c0 = product(x0, y0);
 		c1 = string_add_large(product(x1, y0), product(x0, y1));
 
-		// Pad c2 and c1 with 0s
+		// Append 0s to c2 and c1
 		c2 += pad2;
 		c1 += pad1;
 	}
+	// Add the strings together for the final result
 	result = string_add_large(c0, c1);
 	result = string_add_large(result, c2);
 	return result;
