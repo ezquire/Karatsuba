@@ -5,8 +5,10 @@
 #include <algorithm>
 #include <string>
 #include <bits/stdc++.h>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 // Function Prototypes
 string product(string, string);
@@ -23,27 +25,43 @@ int main () {
 }
 
 void run_karatsuba(int& choice) {
-		string a = "";
-		string b = "";
-		while(choice < 3) {
+	string a = "";
+	string b = "";
+	while(choice < 3) {
 		cout << "\nEnter 1, 2, or 3\n1) Multiplication\n2) Exponentiation\n3)";
 		cout << " Quit\n";
 		cin >> choice;
+		
 		switch(choice) {
-		case 1:
+		case 1: {
 			get_input(a, b);
 			cout << "\nPerforming multiplication with input: " << a << ", ";
 			cout << b << endl;
 			cout << a << "x" << b << " = " << product(a, b) << endl;
 			break;
-		case 2:
+		}
+		case 2: {
 			get_input(a, b);
-			cout << "\nPerforming exponentiation with input: " << a << ", ";
-			cout << b << endl;;
-			cout << a << "^" << b << " = " << expo(a, b) << endl;
+			/*cout << "\nPerforming exponentiation with input: " << a << ", ";
+			//cout << b << endl;
+			//cout << a << "^" << b << " = ";
+			auto start = high_resolution_clock::now();
+			expo(a, b);
+			auto end = high_resolution_clock::now();
+			duration<double> elapsed_seconds = end - start;
+			cout << "time taken: "<< elapsed_seconds.count() << endl;
+			break;*/
+			
+			auto start = high_resolution_clock::now();
+			string suba = expo(a, b);
+			auto stop = high_resolution_clock::now();
+			auto duration = duration_cast<microseconds>(stop - start);
+			cout << "time: " << duration.count() << " microseconds" << endl;
 			break;
-		default :
+		}
+		default : {
 			break;
+		}
 		}
 	}
 }
