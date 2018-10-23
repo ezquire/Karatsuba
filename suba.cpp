@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
+#include <ctype.h>
 #include <algorithm>
 #include <string>
 #include <bits/stdc++.h>
@@ -9,48 +10,62 @@ using namespace std;
 
 // Function Prototypes
 string product(string, string);
-string expo(string, string);
-string multiply_str(string, string);
-string string_add_large(string, string);
+string expo(const string&, const string&);
+const string multiply_str(const string&, const string&);
+const string string_add_large(string, string);
+void get_input(string&, string&);
+void run_karatsuba(int&);
 
 int main () {
-
-	string a = "";
-	string b = "";	
 	int choice = 0;
-
-	cout << "Input an integer less than or equal to 1000 for A: ";
-	cin >> a;
-	while(stoi(a, NULL) > 1000) {
-		cout << "Error: input should be less than or equal to 1000\n";
-		cout << "Enter another value for A: ";
-		cin >> a;
-	}
-
-	cout << "Input an integer less than or equal to 1000 for B: ";
-	cin >> b;
-	while(stoi(b, NULL) > 1000) {
-		cout << "Error: input should be less than or equal to 1000\n";
-		cout << "Enter another value for B: ";
-		cin >> b;
-	}
-
-	while(choice < 3) {
-		cout << "\nEnter 1, 2, or 3\n1) Run Task 1 - Multiplication\n2) Run Task 2 - Exponentiation\n3) Quit\n";
-		cin >> choice;
-		if(choice == 1) {
-			cout << "Running Task 1 with input: " << a << ", " << b << endl;;
-			cout << a << "x" << b << " = " << product(a, b) << endl;
-		}
-		else if(choice == 2) {
-			cout << "Running Task 2 with input: " << a << ", " << b << endl;;
-			cout << a << "^" << b << " = " << expo(a, b) << endl;
-		}
-	}
+	run_karatsuba(choice);
 	return 0;
 }
 
-string multiply_str(string x, string y) {
+void run_karatsuba(int& choice) {
+		string a = "";
+		string b = "";
+		while(choice < 3) {
+		cout << "\nEnter 1, 2, or 3\n1) Multiplication\n2) Exponentiation\n3)";
+		cout << " Quit\n";
+		cin >> choice;
+		switch(choice) {
+		case 1:
+			get_input(a, b);
+			cout << "\nPerforming multiplication with input: " << a << ", ";
+			cout << b << endl;
+			cout << a << "x" << b << " = " << product(a, b) << endl;
+			break;
+		case 2:
+			get_input(a, b);
+			cout << "\nPerforming exponentiation with input: " << a << ", ";
+			cout << b << endl;;
+			cout << a << "^" << b << " = " << expo(a, b) << endl;
+			break;
+		default :
+			break;
+		}
+	}
+}
+
+void get_input(string& a, string& b) {
+	cout << "\nInput an integer less than or equal to 1000 for A: ";
+	cin >> a;
+	while(stoi(a, NULL) > 1000 || stoi(a, NULL) < 0) {
+		cout << "Error: input should be in the range [0-1000]\n";
+		cout << "Enter another value for A: ";
+		cin >> a;
+	}
+	cout << "Input an integer less than or equal to 1000 for B: ";
+	cin >> b;
+	while(stoi(b, NULL) > 1000 || stoi(b, NULL) < 0) {
+		cout << "Error: input should be in the range [0-1000]\n";
+		cout << "Enter another value for B: ";
+		cin >> b;
+	}
+}
+
+const string multiply_str(const string& x, const string& y) {
 	int product = ((x[0] - '0') * (y[0] - '0'));
 	return to_string(product);
 }
@@ -69,9 +84,9 @@ string product(string x, string y) {
  	else {
 		// Pad x and y with leading 0s to make them an even number of digits
 		if(x.length()%2 != 0)
-			x = "0" + x;
+			x = '0' + x;
 		if(y.length()%2 != 0)
-			y = "0" + y;
+			y = '0' + y;
 		// Pad the smaller value with leading 0s to make it the same length
 		if(x.length() < y.length()) {
 			string a ((y.length() - x.length()), '0');
@@ -81,15 +96,14 @@ string product(string x, string y) {
 			string b ((x.length() - y.length()), '0');
 			y = b + y;
 		}
-		
 		// Multiplier
 		int n = x.length();
-		
-		// Creates strings of trailing 0s that will pad c2 and c1
+
+		// Create strings of 0s that will be appended to c2 and c1
 		string pad2 (n, '0');
 		string pad1 (n/2, '0');		
 
-		// Splits the padded strings x and y into to halves
+		// Split the padded strings x and y into to halves
 		int half = x.length()/2;
 		string x1 = x.substr(0, half);
 		string x0 = x.substr(half);
@@ -100,20 +114,19 @@ string product(string x, string y) {
 		// Recursively call product to produce c2, c1, and c0
 		c2 = product(x1, y1);
 		c0 = product(x0, y0);
-		
 		c1 = string_add_large(product(x1, y0), product(x0, y1));
-		//c1 = add_str(product(x1, y0), product(x0, y1));
 
-		// Pad c2 and c1 with 0s
+		// Append 0s to c2 and c1
 		c2 += pad2;
 		c1 += pad1;
 	}
+	// Add the strings together for the final result
 	result = string_add_large(c0, c1);
 	result = string_add_large(result, c2);
 	return result;
 }
 
-string string_add_large(string x, string y) {
+const string string_add_large(string x, string y) {
 	string result = "";
 	
 	// Swap strings in memory so the larger is second
@@ -125,13 +138,12 @@ string string_add_large(string x, string y) {
 	int yLength = y.length();
 
 	// Need to reverse them so the rightmost digits are in the leftmost indices
-	// This can probably be optimized
 	reverse(x.begin(), x.end());
 	reverse(y.begin(), y.end());
 
 	int carry = 0;
 
-	for(int i = 0 ; i < xLength; ++i) {
+	for(int i = 0; i < xLength; ++i) {
 		int sum = ((x[i] - '0') + (y[i] - '0') + carry); // Convert and add
 		result.push_back(sum%10 + '0'); // Convert back to string and push
 		carry = sum/10; // Carry for the next step (grade school method)
@@ -157,7 +169,7 @@ string string_add_large(string x, string y) {
 	return result;
 }
 
-string expo(string a, string n) {
+string expo(const string& a, const string& n) {
 	long nInt = stol(n, NULL);
 	string nOdd = to_string((nInt - 1)/2);
 	string nEven = to_string(nInt/2);
