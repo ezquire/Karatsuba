@@ -1,3 +1,29 @@
+/*
+ * suba.cpp
+ * Implementation of the Karatsuba algorithm for multiplication and 
+ * exponentiation
+ */
+
+/*
+  MIT License
+  Copyright (c) 2018 Tyler Gearing, Mei Williams
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <math.h>
@@ -6,81 +32,44 @@
 #include <string>
 #include <bits/stdc++.h>
 #include <chrono>
+#include <vector>
+#include <fstream>
 
 using namespace std;
 using namespace std::chrono;
 
 // Function Prototypes
 string product(string, string);
-string expo(const string&, const string&);
+string expo(const string&, const string&, int);
+string slow_product(string, string);
 const string multiply_str(const string&, const string&);
 const string string_add_large(string, string);
-void get_input(string&, string&);
-void run_karatsuba(int&);
 
 int main () {
-	int choice = 0;
-	run_karatsuba(choice);
+
+	ofstream slow;
+    ofstream fast;
+    slow.open("slow.txt", ios::out);
+    fast.open("fast.txt", ios::out);
+
+	for( int i = 0; i < 100; ++i) {
+		string a = "10";
+		string b = to_string(i);
+		auto start_slow = high_resolution_clock::now();
+		expo(a, b, 1);
+		auto end_slow = high_resolution_clock::now();
+		duration<double> elapsed_seconds_slow = end_slow - start_slow;
+		slow << i << " " << elapsed_seconds_slow.count() << endl;
+		auto start_fast = high_resolution_clock::now();
+		expo(a, b, 0);
+		auto end_fast = high_resolution_clock::now();
+		duration<double> elapsed_seconds_fast = end_fast - start_fast;
+		fast << i << " " << elapsed_seconds_fast.count() << endl;
+	}
+
+	slow.close();
+    fast.close();
 	return 0;
-}
-
-void run_karatsuba(int& choice) {
-	string a = "";
-	string b = "";
-	while(choice < 3) {
-		cout << "\nEnter 1, 2, or 3\n1) Multiplication\n2) Exponentiation\n3)";
-		cout << " Quit\n";
-		cin >> choice;
-		
-		switch(choice) {
-		case 1: {
-			get_input(a, b);
-			cout << "\nPerforming multiplication with input: " << a << ", ";
-			cout << b << endl;
-			cout << a << "x" << b << " = " << product(a, b) << endl;
-			break;
-		}
-		case 2: {
-			get_input(a, b);
-			/*cout << "\nPerforming exponentiation with input: " << a << ", ";
-			//cout << b << endl;
-			//cout << a << "^" << b << " = ";
-			auto start = high_resolution_clock::now();
-			expo(a, b);
-			auto end = high_resolution_clock::now();
-			duration<double> elapsed_seconds = end - start;
-			cout << "time taken: "<< elapsed_seconds.count() << endl;
-			break;*/
-			
-			auto start = high_resolution_clock::now();
-			string suba = expo(a, b);
-			auto stop = high_resolution_clock::now();
-			auto duration = duration_cast<microseconds>(stop - start);
-			cout << "time: " << duration.count() << " microseconds" << endl;
-			break;
-		}
-		default : {
-			break;
-		}
-		}
-	}
-}
-
-void get_input(string& a, string& b) {
-	cout << "\nInput an integer less than or equal to 1000 for A: ";
-	cin >> a;
-	while(stoi(a, NULL) > 1000 || stoi(a, NULL) < 0) {
-		cout << "Error: input should be in the range [0-1000]\n";
-		cout << "Enter another value for A: ";
-		cin >> a;
-	}
-	cout << "Input an integer less than or equal to 1000 for B: ";
-	cin >> b;
-	while(stoi(b, NULL) > 1000 || stoi(b, NULL) < 0) {
-		cout << "Error: input should be in the range [0-1000]\n";
-		cout << "Enter another value for B: ";
-		cin >> b;
-	}
 }
 
 const string multiply_str(const string& x, const string& y) {
@@ -95,10 +84,9 @@ string product(string x, string y) {
 	string c0;
 	string c1;
 	
-	if(x.length() < 2 && y.length() < 2) {
-		result = multiply_str(x, y);
-		return result;
-	}
+	if(x.length() < 2 && y.length() < 2)
+		return multiply_str(x, y);
+		
  	else {
 		// Pad x and y with leading 0s to make them an even number of digits
 		if(x.length()%2 != 0)
@@ -143,6 +131,50 @@ string product(string x, string y) {
 	result = string_add_large(result, c2);
 	return result;
 }
+  
+string slow_product(string a, string b) {
+	int x1 = a.size(); 
+    int x2 = b.size(); 
+    if (x1 == 0 || x2 == 0) 
+       return "0"; 
+  
+    vector<int> result(x1 + x2, 0); 
+
+    int ix1 = 0;  
+    int ix2 = 0;
+
+	for (int i = x1-1; i >= 0; --i) {
+		int carry = 0;
+		int x1 = a[i] - '0'; 
+		ix2 = 0;
+
+		for (int j= x2 - 1; j >= 0; --j) { 
+            int x2 = a[j] - '0'; 
+            int sum = x1*x2 + result[ix1 + ix2] + carry; 
+            carry = sum/10; 
+            result[ix1 + ix2] = sum % 10; 
+  
+            ix2++; 
+        } 
+  
+        if (carry > 0) 
+            result[ix1 + ix2] += carry;
+		ix1++; 
+    } 
+
+    int i = result.size() - 1; 
+    while (i >= 0 && result[i] == 0) 
+       i--; 
+
+    if (i == -1) 
+       return "0"; 
+
+    string ret = ""; 
+    while (i >= 0) 
+        ret += to_string(result[i--]); 
+  
+    return ret; 
+} 
 
 const string string_add_large(string x, string y) {
 	string result = "";
@@ -187,7 +219,7 @@ const string string_add_large(string x, string y) {
 	return result;
 }
 
-string expo(const string& a, const string& n) {
+string expo(const string& a, const string& n, int algo) {
 	long nInt = stol(n, NULL);
 	string nOdd = to_string((nInt - 1)/2);
 	string nEven = to_string(nInt/2);
@@ -202,10 +234,18 @@ string expo(const string& a, const string& n) {
 		if(nInt == 1)
 			return a;		
 		// n is odd
-		if(nInt%2 != 0)
-			return product(a, product(expo(a, nOdd), expo(a, nOdd))); 
+		if(nInt%2 != 0) {
+			if(algo == 0)
+				return product(a, product(expo(a, nOdd, 0), expo(a, nOdd, 0)));
+			else
+				return slow_product(a, slow_product(expo(a, nOdd, 1), expo(a, nOdd, 1)));
+		}
 		// n is even
-		else
-			return product(expo(a, nEven), expo(a, nEven)); 
+		else {
+			if(algo == 0)
+				return product(expo(a, nEven, 0), expo(a, nEven, 0));
+			else
+				return slow_product(expo(a, nEven, 1), expo(a, nEven, 1));
+		}
 	}
 }

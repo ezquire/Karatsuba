@@ -96,3 +96,9 @@ Performing exponentiation with input: 999, 999
 0896827103502442222900178912804197827678037852779608347298692499916584170004999
 98999
 ```
+
+To generate the scatterplot run
+
+```
+gnuplot scatter.gnuplot
+```

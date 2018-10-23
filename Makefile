@@ -9,4 +9,4 @@ suba : $(obj)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean :
-	rm suba *~ *.o
+	rm suba *~ *.o *.txt
